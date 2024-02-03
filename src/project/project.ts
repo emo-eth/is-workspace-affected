@@ -26,14 +26,14 @@ export class Project {
   // Methods
   private async _loadManifest(dir: string): Promise<Package> {
     core.debug(`_loadManifest(${dir})`)
-    core.debug('this.root', this.root)
-    core.debug('dir', dir) 
+    core.debug(this.root)
+    core.debug(dir) 
     const file = path.resolve(this.root, dir, 'package.json');
     core.debug(`Loading ${path.relative(this.root, file)} ...`);
 
     const data = await fs.readFile(file, 'utf-8');
     const mnf = JSON.parse(data);
-    core.debug('mnf', mnf)
+    core.debug(mnf)
     normalize(mnf, (msg) => core.debug(msg));
 
     return mnf;
@@ -47,12 +47,12 @@ export class Project {
       if (!wks) {
         const manifest = await this._loadManifest(dir);
         wks = new Workspace(this, dir, manifest);
-        core.debug('wks', wks)
+        core.debug( wks.toString())
 
         this._workspaces.set(dir, wks);
         this._names.set(wks.name, wks);
       }
-      core.debug('_loadWorkspace wks', wks)
+      core.debug(wks.toString())
 
       return wks;
     });
@@ -98,7 +98,7 @@ export class Project {
     } else {
       // Load child workspaces
       const { workspaces = [] } = main.manifest;
-      core.debug('workspaces', workspaces)
+      core.debug( workspaces.toString())
 
       for (const pattern of workspaces) {
         const globber = await glob.create(path.join(this.root, pattern), { matchDirectories: true, followSymbolicLinks: false });
