@@ -25,41 +25,41 @@ export class Project {
 
   // Methods
   private async _loadManifest(dir: string): Promise<Package> {
-    console.debug(`_loadManifest(${dir})`)
-    console.debug('this.root', this.root)
-    console.debug('dir', dir) 
+    core.debug(`_loadManifest(${dir})`)
+    core.debug('this.root', this.root)
+    core.debug('dir', dir) 
     const file = path.resolve(this.root, dir, 'package.json');
     core.debug(`Loading ${path.relative(this.root, file)} ...`);
 
     const data = await fs.readFile(file, 'utf-8');
     const mnf = JSON.parse(data);
-    console.debug('mnf', mnf)
+    core.debug('mnf', mnf)
     normalize(mnf, (msg) => core.debug(msg));
 
     return mnf;
   }
 
   private async _loadWorkspace(dir: string): Promise<Workspace> {
-    console.debug(`_loadWorkspace(${dir})`)
+    core.debug(`_loadWorkspace(${dir})`)
     return await this._lock.with(async () => {
       let wks = this._workspaces.get(dir);
 
       if (!wks) {
         const manifest = await this._loadManifest(dir);
         wks = new Workspace(this, dir, manifest);
-        console.debug('wks', wks)
+        core.debug('wks', wks)
 
         this._workspaces.set(dir, wks);
         this._names.set(wks.name, wks);
       }
-      console.debug('_loadWorkspace wks', wks)
+      core.debug('_loadWorkspace wks', wks)
 
       return wks;
     });
   }
 
   async mainWorkspace(): Promise<Workspace> {
-    console.debug('mainWorkspace()')
+    core.debug('mainWorkspace()')
     if (!this._mainWorkspace) {
       const manifest = await this._loadManifest('.');
       this._mainWorkspace = new Workspace(this, '.', manifest);
@@ -71,7 +71,7 @@ export class Project {
   }
 
   async currentWorkspace(cwd = process.cwd()): Promise<Workspace | null> {
-    console.debug(`currentWorkspace(${cwd})`)
+    core.debug(`currentWorkspace(${cwd})`)
     let workspace: Workspace | null = null;
     cwd = path.resolve(cwd);
 
@@ -87,7 +87,7 @@ export class Project {
   }
 
   async* workspaces(): AsyncGenerator<Workspace, void> {
-    console.debug('workspaces()')
+    core.debug('workspaces()')
     const main = await this.mainWorkspace();
     yield main;
 
@@ -98,7 +98,7 @@ export class Project {
     } else {
       // Load child workspaces
       const { workspaces = [] } = main.manifest;
-      console.debug('workspaces', workspaces)
+      core.debug('workspaces', workspaces)
 
       for (const pattern of workspaces) {
         const globber = await glob.create(path.join(this.root, pattern), { matchDirectories: true, followSymbolicLinks: false });
@@ -128,7 +128,7 @@ export class Project {
   }
 
   async workspace(name?: string): Promise<Workspace | null> {
-    console.debug(`workspace(${name})`)
+    core.debug(`workspace(${name})`)
     // With current directory
     if (!name) {
       const dir = path.relative(this.root, process.cwd());
