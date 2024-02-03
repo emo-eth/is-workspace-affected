@@ -1,7 +1,8 @@
 import * as core from '@actions/core';
 import * as glob from '@actions/glob';
 import { Lock } from '@jujulego/utils';
-import normalize, { Package } from 'normalize-package-data';
+// import normalize, { Package } from 'normalize-package-data';
+import NPMCliPackageJson, {load, } from '@npmcli/package-json'
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
@@ -24,19 +25,20 @@ export class Project {
   }
 
   // Methods
-  private async _loadManifest(dir: string): Promise<Package> {
+  private async _loadManifest(dir: string): Promise<NPMCliPackageJson> {
     core.debug(`_loadManifest(${dir})`)
     core.debug(this.root)
     core.debug(dir) 
     const file = path.resolve(this.root, dir, 'package.json');
     core.debug(`Loading ${path.relative(this.root, file)} ...`);
+    return await load(file);
 
-    const data = await fs.readFile(file, 'utf-8');
-    const mnf = JSON.parse(data);
-    core.debug(mnf)
-    normalize(mnf, (msg) => core.debug(msg));
+    // const data = await fs.readFile(file, 'utf-8');
+    // const mnf = JSON.parse(data);
+    // core.debug(mnf)
+    // normalize(mnf, (msg) => core.debug(msg));
 
-    return mnf;
+    // return mnf;
   }
 
   private async _loadWorkspace(dir: string): Promise<Workspace> {
@@ -97,8 +99,15 @@ export class Project {
       }
     } else {
       // Load child workspaces
-      const { workspaces = [] } = main.manifest;
-      core.debug( workspaces.toString())
+      const workspacesVal = main.manifest.content.workspaces || {};
+      // core.debug( workspaces.toString())
+      let workspaces: string[] ;
+      if (!Array.isArray(workspacesVal)) {
+       workspaces = workspacesVal.packages || []
+      } else {
+        workspaces = workspacesVal
+      }
+
 
       for (const pattern of workspaces) {
         const globber = await glob.create(path.join(this.root, pattern), { matchDirectories: true, followSymbolicLinks: false });

@@ -7,6 +7,7 @@ import { satisfies } from 'semver';
 
 import { git } from '../git.ts';
 import { Project } from './project.ts';
+import NPMCliPackageJson from '@npmcli/package-json';
 
 // Class
 export class Workspace {
@@ -19,7 +20,7 @@ export class Workspace {
   constructor(
     readonly project: Project,
     cwd: string,
-    readonly manifest: Package
+    readonly manifest: NPMCliPackageJson
   ) {
     this.cwd = path.resolve(project.root, cwd);
   }
@@ -90,28 +91,28 @@ export class Workspace {
   }
 
   async* dependencies(): AsyncGenerator<Workspace, void> {
-    if (!this.manifest.dependencies) return;
+    if (!this.manifest.content.dependencies) return;
 
-    for await (const ws of this._loadDependencies(this.manifest.dependencies, 'dependency')) {
+    for await (const ws of this._loadDependencies(this.manifest.content.dependencies, 'dependency')) {
       yield ws;
     }
   }
 
   async* devDependencies(): AsyncGenerator<Workspace, void> {
-    if (!this.manifest.devDependencies) return;
+    if (!this.manifest.content.devDependencies) return;
 
-    for await (const ws of this._loadDependencies(this.manifest.devDependencies, 'devDependency')) {
+    for await (const ws of this._loadDependencies(this.manifest.content.devDependencies, 'devDependency')) {
       yield ws;
     }
   }
 
   // Properties
   get name(): string {
-    return this.manifest.name;
+    return this.manifest.content.name || '';
   }
 
   get version(): string {
-    return this.manifest.version;
+    return this.manifest.content.version || '';
   }
 
   get reference(): string {
