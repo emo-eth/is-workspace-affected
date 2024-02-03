@@ -32263,7 +32263,7 @@ class Project {
         _actions_core__WEBPACK_IMPORTED_MODULE_0__.debug(`_loadManifest(${dir})`);
         _actions_core__WEBPACK_IMPORTED_MODULE_0__.debug(this.root);
         _actions_core__WEBPACK_IMPORTED_MODULE_0__.debug(dir);
-        const file = node_path__WEBPACK_IMPORTED_MODULE_4___default().resolve(this.root, dir, "package.json");
+        const file = node_path__WEBPACK_IMPORTED_MODULE_4___default().resolve(this.root, dir);
         _actions_core__WEBPACK_IMPORTED_MODULE_0__.debug(`Loading ${node_path__WEBPACK_IMPORTED_MODULE_4___default().relative(this.root, file)} ...`);
         return await (0,_npmcli_package_json__WEBPACK_IMPORTED_MODULE_2__.load)(file);
     // const data = await fs.readFile(file, 'utf-8');

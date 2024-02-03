@@ -29,7 +29,7 @@ export class Project {
     core.debug(`_loadManifest(${dir})`)
     core.debug(this.root)
     core.debug(dir) 
-    const file = path.resolve(this.root, dir, 'package.json');
+    const file = path.resolve(this.root, dir);
     core.debug(`Loading ${path.relative(this.root, file)} ...`);
     return await load(file);
 
