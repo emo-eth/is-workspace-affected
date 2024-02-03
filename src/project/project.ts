@@ -88,9 +88,10 @@ export class Project {
     } else {
       // Load child workspaces
       const { workspaces = [] } = main.manifest;
+      console.debug('workspaces', workspaces)
 
       for (const pattern of workspaces) {
-        const globber = await glob.create(path.join(this.root, pattern), { matchDirectories: true });
+        const globber = await glob.create(path.join(this.root, pattern), { matchDirectories: true, followSymbolicLinks: false });
 
         for await (const dir of globber.globGenerator()) {
           try {
