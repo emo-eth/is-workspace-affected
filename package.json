@@ -1,10 +1,10 @@
 {
-  "name": "is-workspace-affected",
+  "name": "is-workspace-affected2",
   "version": "2.1.0",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/neoxia/is-workspace-affected"
+    "url": "https://github.com/emo-eth/is-workspace-affected"
   },
   "type": "module",
   "scripts": {
