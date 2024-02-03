@@ -2795,9 +2795,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-workspace-affected@workspace:.":
+"is-workspace-affected2@workspace:.":
   version: 0.0.0-use.local
-  resolution: "is-workspace-affected@workspace:."
+  resolution: "is-workspace-affected2@workspace:."
   dependencies:
     "@actions/core": "npm:^1.10.1"
     "@actions/glob": "npm:^0.4.0"
